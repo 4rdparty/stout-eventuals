@@ -1,22 +1,63 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
+windows_srcs = [
+    "callback.cc",
+    "closure.cc",
+    "conditional.cc",
+    "eventual.cc",
+    #"jemalloc.cc",
+    "libcurl.cc",  #Currently, libcurl is available for Windows only
+    "libuv.cc",
+    "lock.cc",
+    "repeat.cc",
+    "static-thread-pool.cc",
+    "static-thread-pool-parallel.cc",
+    "stream.cc",
+    "task.cc",
+    "then.cc",
+]
+
+macos_srcs = [
+    "callback.cc",
+    "closure.cc",
+    "conditional.cc",
+    "eventual.cc",
+    #"jemalloc.cc",
+    #"libcurl.cc",
+    "libuv.cc",
+    "lock.cc",
+    "repeat.cc",
+    "static-thread-pool.cc",
+    "static-thread-pool-parallel.cc",
+    "stream.cc",
+    "task.cc",
+    "then.cc",
+]
+
+linux_srcs = [
+    "callback.cc",
+    "closure.cc",
+    "conditional.cc",
+    "eventual.cc",
+    "jemalloc.cc",  #Currently, jemalloc is available for Linux only
+    #"libcurl.cc",
+    "libuv.cc",
+    "lock.cc",
+    "repeat.cc",
+    "static-thread-pool.cc",
+    "static-thread-pool-parallel.cc",
+    "stream.cc",
+    "task.cc",
+    "then.cc",
+]
+
 cc_test(
     name = "eventuals",
-    srcs = [
-        "callback.cc",
-        "closure.cc",
-        "conditional.cc",
-        "eventual.cc",
-        "libcurl.cc",
-        "libuv.cc",
-        "lock.cc",
-        "repeat.cc",
-        "static-thread-pool.cc",
-        "static-thread-pool-parallel.cc",
-        "stream.cc",
-        "task.cc",
-        "then.cc",
-    ],
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": windows_srcs,
+        "@bazel_tools//src/conditions:darwin": macos_srcs,
+        "//conditions:default": linux_srcs,
+    }),
     deps = [
         "//:eventuals",
         "@com_github_google_googletest//:gtest_main",
